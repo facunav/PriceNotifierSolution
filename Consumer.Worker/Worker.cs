@@ -16,19 +16,6 @@ namespace Consumer.Worker
             _logger = logger;
         }
 
-        public override async Task StartAsync(CancellationToken cancellationToken)
-        {
-            var client = new ServiceBusClient(_config["ServiceBus:ConnectionString"]);
-            _processor = client.CreateProcessor(
-                _config["ServiceBus:TopicName"],
-                _config["ServiceBus:SubscriptionName"]);
-
-            _processor.ProcessMessageAsync += MessageHandler;
-            _processor.ProcessErrorAsync += ErrorHandler;
-
-            await _processor.StartProcessingAsync(cancellationToken);
-        }
-
         private Task ErrorHandler(ProcessErrorEventArgs args)
         {
             Console.WriteLine($"Error: {args.Exception.Message}");
@@ -45,12 +32,25 @@ namespace Consumer.Worker
             await args.CompleteMessageAsync(args.Message);
         }
 
-        public override async Task StopAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await _processor.StopProcessingAsync(cancellationToken);
+            var client = new ServiceBusClient(_config["ServiceBus:ConnectionString"]);
+            _processor = client.CreateProcessor(
+                _config["ServiceBus:TopicName"],
+                _config["ServiceBus:FacturasSubscriptionName"]);
+
+            _processor.ProcessMessageAsync += MessageHandler;
+            _processor.ProcessErrorAsync += ErrorHandler;
+
+            await _processor.StartProcessingAsync(stoppingToken);
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await Task.Delay(1000, stoppingToken);
+            }
+
+            await _processor.StopProcessingAsync(stoppingToken);
             await _processor.DisposeAsync();
         }
-
-        protected override Task ExecuteAsync(CancellationToken stoppingToken) => Task.CompletedTask;
     }
 }

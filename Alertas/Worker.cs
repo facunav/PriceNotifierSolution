@@ -36,7 +36,7 @@ namespace Alertas
             var client = new ServiceBusClient(_config["ServiceBus:ConnectionString"]);
             _processor = client.CreateProcessor(
                 _config["ServiceBus:TopicName"],
-                _config["ServiceBus:FacturasSubscriptionName"]);
+                _config["ServiceBus:AlertasSubscriptionName"]);
 
             _processor.ProcessMessageAsync += MessageHandler;
             _processor.ProcessErrorAsync += ErrorHandler;

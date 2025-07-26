@@ -7,12 +7,12 @@ precios. Es ideal para proyectos donde múltiples servicios necesitan reaccionar
 
 ## 🧱 Estructura del proyecto
 PriceNotifierSolution/
-│
-├── Producer.Api/ # Publica mensajes de actualización de precio en un topic
-├── Consumer.Worker/ # Procesa las actualizaciones de precios recibidas
-├── Alertas/ # Escucha cambios de precios y genera alertas
-├── Facturas/ # Genera facturas a partir de los mensajes
-└── Shared/ # Contiene modelos compartidos y lógica común
+
+- Producer.Api/ # Publica mensajes de actualización de precio en un topic
+- Consumer.Worker/ # Procesa las actualizaciones de precios recibidas
+- Alertas/ # Escucha cambios de precios y genera alertas
+- Facturas/ # Genera facturas a partir de los mensajes
+- Shared/ # Contiene modelos compartidos y lógica común
 
 
 ---
@@ -72,7 +72,7 @@ ghcr.io/facunav/facturas
   }
 }
 
-3.Levantar desde Visual Studio o terminal:
+3. Levantar desde Visual Studio o terminal:
 dotnet run --project Producer.Api
 
 ☁️ Despliegue en Azure Container Apps
